@@ -1,6 +1,6 @@
 const Home = () => {
     return (
-        <div className="flex flex-col gap-6 text-[20px] pr-48">
+        <div className="flex flex-col gap-6 text-[20px] md:pr-48">
             <p>
                 A seasoned Frontend Developer with 5 years of experience, specializing in creating dynamic and
                 user-centric

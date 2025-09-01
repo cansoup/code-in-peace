@@ -12,7 +12,8 @@ const Menus = () => {
     ]
 
     return (
-        <nav className="absolute flex flex-col font-bold items-end gap-6 top-16 right-16">
+        <nav
+            className="flex justify-end font-bold items-end gap-6 mt-4 md:mt-0 md:top-16 md:right-16 md:absolute md:flex-col">
             {menuItems.map(item => (
                 <Link key={item.path}
                       to={item.path}
