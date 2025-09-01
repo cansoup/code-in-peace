@@ -1,28 +1,33 @@
-interface MenusProps {
-    currentPage: string;
-    onNavigate: (page: string) => void;
-}
+import {Link, useLocation} from "react-router";
 
-const Menus = ({currentPage, onNavigate}: MenusProps) => {
+
+const Menus = () => {
+    const location = useLocation();
+    const currentPath = location.pathname;
+
     const menuItems = [
-        {name: 'home', page: 'home'},
-        {name: 'projects', page: 'projects'},
-        {name: 'about', page: 'about'},
+        {name: 'home', path: '/'},
+        {name: 'about', path: 'about'},
+        {name: 'projects', path: 'projects'},
     ]
 
     return (
-        <nav className=" flex font-bold justify-end gap-12">
+        <nav className="absolute flex flex-col font-bold items-end gap-6 top-16 right-16">
             {menuItems.map(item => (
-                <button key={item.page}
-                        onClick={() => onNavigate(item.page)}
-                        className={`px-4 py-2 rounded-full font-medium transition-colors ${
-                            currentPage === item.page
-                                ? 'bg-blue-500 text-white'
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
+                <Link key={item.path}
+                      to={item.path}
+                      className={`duration-150 ${
+                          currentPath === item.path
+                              ? 'text-gray-700'
+                              : 'text-gray-700 hover:text-gray-300'
+                      }`}
                 >
-                    {item.name}
-                </button>
+                    <div className="h-4 flex items-center font-medium">
+                        {currentPath === item.path ?
+                            <div className="size-3 rounded-full bg-black"></div> :
+                            <div>{item.name}</div>}
+                    </div>
+                </Link>
             ))}
         </nav>
     )
