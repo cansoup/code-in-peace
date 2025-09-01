@@ -1,31 +1,27 @@
-import MyInfo from "./components/MyInfo.tsx";
-import Menus from "./components/Menus.tsx";
-import Contacts from "./components/Contacts.tsx";
-import {useState} from "react";
-import HomeContent from "./components/contents/HomeContent.tsx";
+import Router from "./routes";
 
 function App() {
-    const [currentPage, setCurrentPage] = useState('home');
 
-    const renderContent = () => {
-        switch (currentPage) {
-            // case 'projects':
-            //     return <ProjectsContent/>;
-            // case 'about':
-            //     return <AboutContent/>;
-            case 'home':
-            default:
-                return <HomeContent/>;
-        }
-    };
 
     return (
-        <div className="p-8 relative h-screen">
-            <Menus currentPage={currentPage} onNavigate={setCurrentPage}/>
-            <MyInfo/>
-            {renderContent()}
-            <Contacts/>
-        </div>
+        <Router/>
+        // <BrowserRou>
+        //     <div className="py-8 px-16 relative h-screen">
+        //         <Menus/>
+        //         <MyInfo/>
+        //         <Routes>
+        //             <Route path="/" element={<HomeContent/>}/>
+        //             <Route path="/projects" element={<ProjectsContent/>}/>
+        //             {/*<Route path="/projects/:id" element={<ProjectDetailContent />} />*/}
+        //             <Route path="/about" element={<AboutContent/>}/>
+        //         </Routes>
+        //         <div className="flex justify-end">
+        //         </div>
+        //         <Contacts/>
+        //         <Footer/>
+        //     </div>
+        // </BrowserRou>
+
     )
 }
 
