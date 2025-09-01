@@ -6,7 +6,7 @@ import Footer from "../Footer.tsx";
 
 const DefaultLayout = () => {
     return (
-        <div className="py-8 px-16 relative h-screen">
+        <div className="px-4 py-8 md:px-16 relative h-screen">
             <MyInfo/>
             <Menus/>
             <div className="flex justify-end mt-20">
