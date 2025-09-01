@@ -1,5 +1,4 @@
 import MyInfo from "./components/MyInfo.tsx";
-import Contents from "./components/Contents.tsx";
 import Menus from "./components/Menus.tsx";
 import Contacts from "./components/Contacts.tsx";
 import {useState} from "react";
@@ -22,9 +21,9 @@ function App() {
 
     return (
         <div className="p-8 relative h-screen">
-            <Menus/>
+            <Menus currentPage={currentPage} onNavigate={setCurrentPage}/>
             <MyInfo/>
-            <Contents/>
+            {renderContent()}
             <Contacts/>
         </div>
     )
