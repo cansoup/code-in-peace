@@ -7,10 +7,10 @@ import Footer from "../Footer.tsx";
 const DefaultLayout = () => {
     return (
         <div className="py-8 px-16 relative h-screen">
-            <Menus/>
             <MyInfo/>
+            <Menus/>
             <div className="flex justify-end mt-20">
-                <div className="w-[69%]">
+                <div className="md:w-[69%]">
                     <Outlet/>
                 </div>
             </div>
