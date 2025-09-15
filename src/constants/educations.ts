@@ -3,7 +3,7 @@ export const educations = [
         title: "Master of Information Technology (Extension)",
         period: "07.2025 - current",
         institution: "",
-        description: "Currently pursuing an advanced degree focusing on specialized areas of IT, including software development, data analytics, and cybersecurity."
+        description: "Currently pursuing an advanced degree focusing on specialized areas of IT, including software development and data analytics."
     },
     {
         title: "Samsung Youth SW Academy (SSAFY)",
