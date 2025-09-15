@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
+import OpenResume from "./OpenResume.tsx";
 
 const MyInfo = () => {
     const [isFixed, setIsFixed] = useState(false);
@@ -91,6 +92,8 @@ const MyInfo = () => {
                         <p>Building delightful user experiences and</p>
                         <p>committed to mastering new skills in a fast-paced development environment</p>
                     </div>
+
+                    <OpenResume/>
                 </div>
             </header>
         </>
