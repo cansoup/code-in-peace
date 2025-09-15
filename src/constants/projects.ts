@@ -27,12 +27,18 @@ export const projectsData = [
         id: 'hiworks-overtime-module',
         title: 'Hiworks Admin: Overtime & Exception Handling',
         description: 'Implemented the module for handling non-standard work hours, such as overtime, holiday work, and business trips. Developed the logic for calculating allowances and ensuring compliance with company policies.',
-        tags: ['React', 'Zustand', 'TypeScript', 'Formik'],
+        tags: ['Vue2', 'TypeScript', 'Rest API', 'element UI', 'SCSS'],
     },
     {
-        id: 'hiworks-reporting-analytics',
-        title: 'Hiworks Admin: Attendance Reporting & Analytics',
-        description: 'Created a feature to generate and export detailed attendance reports. Developed various data visualizations, such as charts and graphs, to help managers analyze team productivity and attendance patterns.',
-        tags: ['React', 'Chart.js', 'TypeScript', 'PDF Export'],
+        id: 'hiworks-payroll-management',
+        title: 'Hiworks Admin: Payroll Management System',
+        description: 'Engineered a detailed payroll management system allowing admins to configure payment criteria, set up earnings and deductions with custom calculation formulas, and process payroll in bulk. The system integrates with e-approval workflows and sends automated payslip notifications.',
+        tags: ['Vue2', 'Composition API', 'TypeScript', 'Rest API', 'element UI', 'SCSS'],
     },
+    {
+        id: 'hiworks-e-contract-system',
+        title: 'Hiworks Admin: E-Contract System',
+        description: 'Built an electronic contract solution integrated with HR data. This feature allows for instant contract requests using customizable templates, real-time progress tracking, and secure digital storage of all contracts, ensuring an efficient and paperless workflow.',
+        tags: ['Vue2', 'Composition API', 'TypeScript', 'Rest API', 'element UI', 'SCSS', 'Digital Signature', 'Security'],
+    }
 ];
