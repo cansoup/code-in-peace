@@ -17,6 +17,12 @@ export const projectsData = [
         description: 'Developed the user-facing feature for accessing and viewing historical payslips directly within the Hiworks platform. Employees can easily check, download, or print their salary statements for any given period.',
         tags: ['Vue2', 'TypeScript', 'Rest API', 'element UI', 'SCSS', 'Security'],
     },
+    {
+        id: 'hiworks-payroll-management',
+        title: 'Hiworks Admin: Payroll Management System',
+        description: 'Engineered a detailed payroll management system allowing admins to configure payment criteria, set up earnings and deductions with custom calculation formulas, and process payroll in bulk. The system integrates with e-approval workflows and sends automated payslip notifications.',
+        tags: ['Vue2', 'Composition API', 'TypeScript', 'Rest API', 'element UI', 'SCSS'],
+    },
     // {
     //     id: 'hiworks-user-e-contract',
     //     title: 'Hiworks User: E-Contract Management',
@@ -53,12 +59,7 @@ export const projectsData = [
     //     description: 'Implemented the module for handling non-standard work hours, such as overtime, holiday work, and business trips. Developed the logic for calculating allowances and ensuring compliance with company policies.',
     //     tags: ['Vue2', 'TypeScript', 'Rest API', 'element UI', 'SCSS'],
     // },
-    // {
-    //     id: 'hiworks-payroll-management',
-    //     title: 'Hiworks Admin: Payroll Management System',
-    //     description: 'Engineered a detailed payroll management system allowing admins to configure payment criteria, set up earnings and deductions with custom calculation formulas, and process payroll in bulk. The system integrates with e-approval workflows and sends automated payslip notifications.',
-    //     tags: ['Vue2', 'Composition API', 'TypeScript', 'Rest API', 'element UI', 'SCSS'],
-    // },
+
     // {
     //     id: 'hiworks-e-contract-system',
     //     title: 'Hiworks Admin: E-Contract System',
