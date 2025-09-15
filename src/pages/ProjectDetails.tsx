@@ -14,7 +14,7 @@ export const ProjectDetails = () => {
         return (
             <div className="text-center p-10">
                 <h2 className="text-2xl font-bold">Project Not Found</h2>
-                <Link to="/project" className="text-black hover:underline mt-4 inline-block">
+                <Link to="/projects" className="text-black hover:underline mt-4 inline-block">
                     &larr; Back to Projects
                 </Link>
             </div>
@@ -25,7 +25,7 @@ export const ProjectDetails = () => {
         <div className="bg-white min-h-screen text-black font-sans">
             <div>
                 <header className="mb-12">
-                    <Link to="/project"
+                    <Link to="/projects"
                           className="inline-flex items-center gap-2 text-gray-600 hover:text-black transition-colors mb-6">
                         <ArrowBackIcon/>
                         <span>Back to Projects</span>
