@@ -1,4 +1,3 @@
-import OpenResume from "../components/OpenResume.tsx";
 import AboutSection from "../components/AboutSection.tsx";
 import {certifications} from "../constants/certificates.ts";
 import {HistoryItem} from "../components/HistoryItem.tsx";
@@ -9,7 +8,6 @@ import {skillSets} from "../constants/skillsets.ts";
 
 const About = () => {
     return <div className="flex flex-col gap-4">
-        <OpenResume/>
         <div className="flex flex-col gap-16">
             <AboutSection sectionTitle="Experience">
                 {experiences.map((exp, index) => (

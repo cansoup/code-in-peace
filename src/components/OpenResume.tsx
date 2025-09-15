@@ -1,19 +1,15 @@
 import LaunchIcon from '@mui/icons-material/Launch';
-import {Link} from "react-router";
-import {Button} from "@mui/material";
 
 const OpenResume = () => {
     return (
-        <Button variant="outlined" color="info">
-            <Link
-                to="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2"
-            >
-                <LaunchIcon/> View Resume (PDF)
-            </Link>
-        </Button>
+        <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-block bg-transparent text-black font-semibold px-8 py-3 rounded-md border-1 border-black hover:bg-black hover:text-white transition-colors duration-300"
+        >
+            <LaunchIcon/> View Resume (PDF)
+        </a>
     )
 }
 
