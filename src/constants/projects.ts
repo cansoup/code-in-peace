@@ -6,6 +6,30 @@ export const projectsData = [
         tags: ['React', 'NextJS', 'Zustand', 'REST API', 'tailwind'],
     },
     {
+        id: 'hiworks-user-attendance-portal',
+        title: 'Hiworks User: Personal Attendance Portal',
+        description: 'Developed the user-facing attendance portal, enabling employees to check in/out via PC or mobile (GPS). The portal allows users to request leave, correct their attendance records, and view personal work statistics and team leave schedules on a shared calendar.',
+        tags: ['Vue2', 'TypeScript', 'Rest API', 'element UI', 'SCSS', 'Geolocation API'],
+    },
+    {
+        id: 'hiworks-user-payroll-access',
+        title: 'Hiworks User: Payroll Slip Access',
+        description: 'Developed the user-facing feature for accessing and viewing historical payslips directly within the Hiworks platform. Employees can easily check, download, or print their salary statements for any given period.',
+        tags: ['Vue2', 'TypeScript', 'Rest API', 'element UI', 'SCSS', 'Security'],
+    },
+    {
+        id: 'hiworks-user-e-contract',
+        title: 'Hiworks User: E-Contract Management',
+        description: 'Built the user portal for electronic contracts, allowing employees to easily review, sign, and manage all requested contracts. The interface provides a centralized location to track contract status and access historical agreements.',
+        tags: ['Vue2', 'TypeScript', 'Rest API', 'element UI', 'SCSS', 'Digital Signature', 'File Management'],
+    },
+    {
+        id: 'hiworks-user-leave-planning',
+        title: 'Hiworks User: Annual Leave Promotion & Planning',
+        description: 'Implemented the annual leave promotion feature, which notifies users to utilize their remaining leave and provides a seamless workflow to submit their usage plan directly through the e-approval system.',
+        tags: ['React', 'TypeScript', 'Notifications', 'Workflow Integration'],
+    },
+    {
         id: 'hiworks-flexible-work-system',
         title: 'Hiworks Admin: Flexible Work Schedule System',
         description: 'Developed the core UI for setting up and managing various work schedules, including flextime, staggered hours, and remote work policies. Implemented a dynamic interface for administrators to create and assign schedules to teams or individuals.',
