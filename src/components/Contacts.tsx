@@ -3,7 +3,7 @@ import Mail from '@mui/icons-material/Mail';
 
 const Contacts = () => {
     return (
-        <ul className="mt-16 md:mt-0 md:absolute bottom-16 flex gap-5 items-center justify-center md:justify-baseline">
+        <ul className="mt-16 md:mt-0 md:fixed bottom-16 flex gap-5 items-center justify-center md:justify-baseline">
             <li>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-6 w-6"
                      aria-hidden="true">
