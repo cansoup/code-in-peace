@@ -4,6 +4,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {DetailSection} from "../components/ProjectDetailSection.tsx";
 import {Feature} from "../components/Feature.tsx";
 import {SkillTag} from "../components/SkillTag.tsx";
+import LanguageIcon from '@mui/icons-material/Language';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 export const ProjectDetails = () => {
     const {id} = useParams()
@@ -43,12 +45,12 @@ export const ProjectDetails = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                         <div className="md:col-span-2">
                             <section className="mb-12">
-                                <h3 className="text-2xl font-bold text-black pb-3 mb-6 border-b-2 border-black">Overview</h3>
+                                <h3 className="text-2xl font-bold text-black pb-3 mb-6 border-b-1 border-gray-400">Overview</h3>
                                 <p className="text-gray-700 leading-relaxed">{project.overview}</p>
                             </section>
 
                             <section>
-                                <h3 className="text-2xl font-bold text-black pb-3 mb-6 border-b-2 border-black">Technical
+                                <h3 className="text-2xl font-bold text-black pb-3 mb-6 border-b-1 border-gray-400">Technical
                                     Deep Dive</h3>
                                 <div className="space-y-8">
                                     {project.deepDive.map((item, index: number) => (
@@ -60,7 +62,7 @@ export const ProjectDetails = () => {
 
                         <aside>
                             <section className="mb-8">
-                                <h3 className="text-xl font-bold text-black pb-3 mb-4 border-b border-black">Tech
+                                <h3 className="text-xl font-semibold text-black pb-3 mb-4 border-b border-gray-400">Tech
                                     Stack</h3>
                                 <div className="space-y-4">
                                     {Object.entries(project.techStack).map(([category, skills]) => (
@@ -74,8 +76,8 @@ export const ProjectDetails = () => {
                                 </div>
                             </section>
 
-                            <section>
-                                <h3 className="text-xl font-bold text-black pb-3 mb-4 border-b border-black">Key
+                            <section className="mb-8">
+                                <h3 className="text-xl font-semibold text-black pb-3 mb-4 border-b border-gray-400">Key
                                     Features</h3>
                                 <div className="space-y-4">
                                     {project.keyFeatures.map((feature, index) => (
@@ -83,6 +85,29 @@ export const ProjectDetails = () => {
                                     ))}
                                 </div>
                             </section>
+
+                            {/* --- Links Section --- */}
+                            {(project.links.live || project.links.github) && (
+                                <section>
+                                    <h3 className="text-xl font-bold text-black pb-3 mb-4 border-b border-gray-400">Links</h3>
+                                    <div className="space-y-3">
+                                        {project.links.live && (
+                                            <a href={project.links.live} target="_blank" rel="noopener noreferrer"
+                                               className="flex items-center gap-3 text-gray-800 hover:text-black transition-colors">
+                                                <LanguageIcon/>
+                                                <span>Live Demo</span>
+                                            </a>
+                                        )}
+                                        {project.links.github && (
+                                            <a href={project.links.github} target="_blank" rel="noopener noreferrer"
+                                               className="flex items-center gap-3 text-gray-800 hover:text-black transition-colors">
+                                                <GitHubIcon/>
+                                                <span>GitHub Repository</span>
+                                            </a>
+                                        )}
+                                    </div>
+                                </section>
+                            )}
                         </aside>
                     </div>
                 </main>
