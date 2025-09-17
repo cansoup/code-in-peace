@@ -124,6 +124,6 @@ export const allProjectsData: AllProjectsDataType = {
             }
         ],
         outcome: "This system dramatically reduced the time and effort required for monthly payroll processing. The automated validation and clear error feedback minimized human error, while the e-approval integration created a secure and streamlined end-to-end workflow for administrators.",
-        links: {live: 'https://hiworks-design-system.hiworks.com/'}
+        links: {}
     },
 };
