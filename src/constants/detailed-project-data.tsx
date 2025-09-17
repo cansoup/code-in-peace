@@ -5,8 +5,42 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
+import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 
 export const allProjectsData: AllProjectsDataType = {
+    'hiworks-design-system': {
+        title: 'Hiworks Design System',
+        subtitle: 'A unified component library to streamline development and ensure brand consistency.',
+        overview: 'Developed a proprietary design system for Hiworks to accelerate UI development and maintain a consistent user experience across all products. This project involved creating a comprehensive library of reusable Vue components, establishing clear design guidelines, and documenting usage patterns to improve developer productivity and reduce redundant work.',
+        imageUrl: '/design-system_thumb.png',
+        techStack: {
+            'Core': ['React', 'TypeScript', 'postcss'],
+            'Documentation': ['Storybook'],
+            'Design & Prototyping': ['Figma'],
+            'Collaboration': ['Confluence'],
+        },
+        keyFeatures: [
+            {icon: <CheckCircleOutlineIcon/>, text: 'Library of reusable React components'},
+            {icon: <CheckCircleOutlineIcon/>, text: 'Interactive documentation with Storybook'},
+            {icon: <CheckCircleOutlineIcon/>, text: 'Clear usage guidelines for developers & designers'},
+        ],
+        deepDive: [
+            {
+                icon: <PaletteOutlinedIcon/>,
+                title: "Systematic Component Architecture",
+                content: "Designed and built a wide range of components, from basic atoms (buttons, inputs) to complex molecules (modals, data tables). Each component was architected for maximum reusability and flexibility using React, allowing them to adapt to various contexts while maintaining a consistent look and feel."
+            },
+            {
+                icon: <HubOutlinedIcon/>,
+                title: "Improving Developer Experience",
+                content: "A key focus was enhancing the developer experience. I used Storybook to create an interactive documentation site where developers could browse all available components, test them in an isolated environment, and view usage examples. This significantly lowered the barrier to entry and accelerated the adoption of the new system across development teams."
+            }
+        ],
+        outcome: "The design system significantly increased development velocity by reducing the need to build components from scratch. It also improved UI/UX consistency across the Hiworks suite and onboarded new developers more effectively by providing a single source of truth for UI elements.",
+        links: {
+            live: 'https://hiworks-design-system.hiworks.com/'
+        }
+    },
     'hiworks-user-payroll-access': {
         title: 'Hiworks User: Payroll Slip Access',
         subtitle: 'A secure and intuitive interface for employees to access their payslips.',
@@ -90,6 +124,6 @@ export const allProjectsData: AllProjectsDataType = {
             }
         ],
         outcome: "This system dramatically reduced the time and effort required for monthly payroll processing. The automated validation and clear error feedback minimized human error, while the e-approval integration created a secure and streamlined end-to-end workflow for administrators.",
-        links: {}
+        links: {live: 'https://hiworks-design-system.hiworks.com/'}
     },
 };

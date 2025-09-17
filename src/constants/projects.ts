@@ -23,6 +23,12 @@ export const projectsData = [
         description: 'Engineered a detailed payroll management system allowing admins to configure payment criteria, set up earnings and deductions with custom calculation formulas, and process payroll in bulk. The system integrates with e-approval workflows and sends automated payslip notifications.',
         tags: ['Vue2', 'Composition API', 'TypeScript', 'Rest API', 'element UI', 'SCSS'],
     },
+    {
+        id: 'hiworks-design-system',
+        title: 'Hiworks Design System',
+        description: 'Developed a proprietary design system for Hiworks to accelerate UI development and maintain a consistent user experience across all products. This project involved creating a comprehensive library of reusable React components, establishing clear design guidelines, and documenting usage patterns to improve developer productivity and reduce redundant work.',
+        tags: ['React', 'TypeScript', 'postcss', 'Vite', 'Storybook'],
+    },
     // {
     //     id: 'hiworks-user-e-contract',
     //     title: 'Hiworks User: E-Contract Management',

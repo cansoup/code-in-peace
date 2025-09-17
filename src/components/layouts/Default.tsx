@@ -10,7 +10,7 @@ const DefaultLayout = () => {
             <MyInfo/>
             <Menus/>
             <div className="flex justify-end mt-20">
-                <div className="md:w-[69%]">
+                <div className="md:w-[80%]">
                     <Outlet/>
                 </div>
             </div>
