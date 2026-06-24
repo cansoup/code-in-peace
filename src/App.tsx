@@ -1,8 +1,8 @@
-import Router from "./routes";
+import PortfolioPage from "./pages/PortfolioPage";
 
 function App() {
     return (
-        <Router/>
+        <PortfolioPage/>
     )
 }
 
