@@ -1,7 +1,7 @@
 import { useT } from "../i18n";
 import { colors as c, heatPalette } from "../theme";
 import { GITHUB_USERNAME } from "../data/portfolio";
-import { useContributions } from "../data/contributions";
+import { useContributions, useRecentCommits } from "../data/contributions";
 
 const CW = 12; // cell size
 const GAP = 3;
@@ -37,6 +37,10 @@ const stat = (fig: string, label: string) => (
 export function GitHubActivity({ fetchUrl }: { fetchUrl?: string }) {
   const t = useT();
   const data = useContributions(GITHUB_USERNAME, fetchUrl);
+  // Go live for the commit log whenever live contribution data is requested.
+  const liveCommits = useRecentCommits(GITHUB_USERNAME, !!fetchUrl);
+  const commits: Commit[] = liveCommits ?? COMMITS;
+  const usingSample = data.isSample || !liveCommits;
 
   return (
     <>
@@ -94,8 +98,8 @@ export function GitHubActivity({ fetchUrl }: { fetchUrl?: string }) {
         {/* Recent commits */}
         <div style={{ borderTop: `1px solid ${c.borderHair}`, marginTop: 16, paddingTop: 14 }}>
           <div style={{ color: c.synComment, fontSize: 11, marginBottom: 8 }}>$ git log --oneline --since="1 week"</div>
-          {COMMITS.map((cm) => (
-            <div key={cm.hash} style={{ display: "flex", gap: 12, alignItems: "baseline", padding: "5px 0", fontSize: 12, flexWrap: "wrap" }}>
+          {commits.map((cm, i) => (
+            <div key={`${cm.hash}-${i}`} style={{ display: "flex", gap: 12, alignItems: "baseline", padding: "5px 0", fontSize: 12, flexWrap: "wrap" }}>
               <span style={{ color: c.synYellow }}>{cm.hash}</span>
               <span style={{ color: c.text, flex: 1, minWidth: 160 }}>{cm.msg}</span>
               <span style={{ color: c.accent, fontSize: 11 }}>{cm.repo}</span>
@@ -104,7 +108,7 @@ export function GitHubActivity({ fetchUrl }: { fetchUrl?: string }) {
           ))}
         </div>
 
-        {data.isSample && (
+        {usingSample && (
           <div style={{ color: c.dim, fontSize: 10, marginTop: 12 }}>
             {t({ en: "// Illustrative data — wire to the GitHub API on deploy", ko: "// 예시 데이터 — 배포 시 GitHub API와 연동" } as any)}
           </div>

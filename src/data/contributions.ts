@@ -124,3 +124,73 @@ export function useContributions(username: string, fetchUrl?: string): ContribDa
 
   return data;
 }
+
+// ---------------------------------------------------------------------------
+// Recent commits (real data)
+// ---------------------------------------------------------------------------
+
+export interface RecentCommit {
+  hash: string;
+  msg: string;
+  repo: string;
+  when: { en: string; ko: string };
+}
+
+/** Format an ISO timestamp as a bilingual relative-time string. */
+function relativeTime(iso: string): { en: string; ko: string } {
+  const diffSec = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
+  const min = Math.floor(diffSec / 60);
+  const hour = Math.floor(min / 60);
+  const day = Math.floor(hour / 24);
+  const week = Math.floor(day / 7);
+  if (week >= 1) return { en: `${week}w ago`, ko: `${week}주 전` };
+  if (day >= 1) return { en: `${day}d ago`, ko: `${day}일 전` };
+  if (hour >= 1) return { en: `${hour}h ago`, ko: `${hour}시간 전` };
+  if (min >= 1) return { en: `${min}m ago`, ko: `${min}분 전` };
+  return { en: "just now", ko: "방금 전" };
+}
+
+/**
+ * Returns the user's most recent public push commits, newest first, or `null`
+ * while loading / on error (so the caller can fall back to sample data).
+ * Uses GitHub's public events API (no token; 60 req/hr per IP, CORS-enabled).
+ */
+export function useRecentCommits(username: string, enabled = true, max = 5): RecentCommit[] | null {
+  const [commits, setCommits] = useState<RecentCommit[] | null>(null);
+
+  useEffect(() => {
+    if (!enabled) return;
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(`https://api.github.com/users/${username}/events/public?per_page=100`);
+        const events = await res.json();
+        if (!Array.isArray(events)) return;
+        const out: RecentCommit[] = [];
+        for (const ev of events) {
+          if (ev.type !== "PushEvent") continue;
+          const repo: string = (ev.repo?.name ?? "").split("/").pop() ?? "";
+          const pushed: { sha?: string; message?: string }[] = ev.payload?.commits ?? [];
+          // The last entry in a push payload is the newest commit.
+          for (let i = pushed.length - 1; i >= 0 && out.length < max; i--) {
+            const cm = pushed[i];
+            if (!cm?.sha) continue;
+            out.push({
+              hash: cm.sha.slice(0, 7),
+              msg: (cm.message ?? "").split("\n")[0],
+              repo,
+              when: relativeTime(ev.created_at),
+            });
+          }
+          if (out.length >= max) break;
+        }
+        if (alive && out.length) setCommits(out);
+      } catch {
+        /* keep null → caller falls back to sample */
+      }
+    })();
+    return () => { alive = false; };
+  }, [username, enabled, max]);
+
+  return commits;
+}

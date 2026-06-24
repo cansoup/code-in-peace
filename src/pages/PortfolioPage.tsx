@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LangContext, useT, type Lang, readStoredLang, storeLang } from "../i18n";
 import { colors as c, font } from "../theme";
+import { GITHUB_USERNAME } from "../data/portfolio";
 import { LangToggle } from "../components/LangToggle";
 import { AboutCode } from "../components/AboutCode";
 import { ImpactGrid, ProjectList } from "../components/Sections";
@@ -77,9 +78,9 @@ function Inner() {
           <AboutCode />
           <ImpactGrid />
           <ProjectList />
-          {/* Pass fetchUrl to load real data, e.g.
-              fetchUrl={`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`} */}
-          <GitHubActivity />
+          {/* Live contribution data via the public jogruber proxy (no token).
+              This also switches the recent-commit log to the GitHub events API. */}
+          <GitHubActivity fetchUrl={`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`} />
           <BackgroundSkills />
           <ContactBar />
         </div>
