@@ -149,6 +149,23 @@ function Inner() {
 
   const toggleFolder = (id: string) => setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
 
+  // --- Drag-to-reorder open tabs ---
+  const dragTabRef = useRef<string | null>(null);
+  const [draggingTab, setDraggingTab] = useState<string | null>(null);
+
+  const reorderTabs = (fromId: string, toId: string) => {
+    if (fromId === toId) return;
+    setOpenTabs((prev) => {
+      const next = [...prev];
+      const from = next.indexOf(fromId);
+      const to = next.indexOf(toId);
+      if (from === -1 || to === -1) return prev;
+      next.splice(from, 1);
+      next.splice(to, 0, fromId);
+      return next;
+    });
+  };
+
   const fileRow = (leaf: FileLeaf) => {
     const active = leaf.id === activeTab;
     return (
@@ -237,11 +254,18 @@ function Inner() {
                 <div
                   key={id}
                   onClick={() => setActiveTab(id)}
+                  draggable
+                  onDragStart={() => { dragTabRef.current = id; setDraggingTab(id); }}
+                  onDragEnter={() => { const from = dragTabRef.current; if (from && from !== id) reorderTabs(from, id); }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => { e.preventDefault(); dragTabRef.current = null; setDraggingTab(null); }}
+                  onDragEnd={() => { dragTabRef.current = null; setDraggingTab(null); }}
                   style={{
                     padding: "9px 10px 9px 16px",
                     background: active ? c.bg : "transparent",
                     borderTop: active ? `2px solid ${c.accent}` : "2px solid transparent",
                     borderRight: `1px solid ${c.borderHair}`,
+                    opacity: draggingTab === id ? 0.4 : 1,
                     color: active ? c.heading : c.dim,
                     display: "flex",
                     gap: 9,
