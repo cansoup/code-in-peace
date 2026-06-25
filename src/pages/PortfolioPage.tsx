@@ -1,29 +1,136 @@
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import { LangContext, useT, type Lang, readStoredLang, storeLang } from "../i18n";
 import { colors as c, font } from "../theme";
 import { GITHUB_USERNAME } from "../data/portfolio";
 import { LangToggle } from "../components/LangToggle";
 import { AboutCode } from "../components/AboutCode";
-import { ImpactGrid, ProjectList } from "../components/Sections";
+import { ImpactGrid, ProjectDetail } from "../components/Sections";
 import { GitHubActivity } from "../components/GitHubActivity";
-import { BackgroundSkills, ContactBar } from "../components/BackgroundSkills";
+import { Background, Skills, ContactBar } from "../components/BackgroundSkills";
 
-const FILES: { icon: string; iconColor: string; name: string; active?: boolean; indent?: number }[] = [
-  { icon: "{ }", iconColor: c.accent, name: "about.tsx", active: true, indent: 26 },
-  { icon: "{ }", iconColor: c.synYellow, name: "skills.json", indent: 28 },
-  { icon: "▸", iconColor: c.muted, name: "projects", indent: 16 },
-  { icon: "V", iconColor: c.synGreen, name: "payroll-access.vue", indent: 40 },
-  { icon: "V", iconColor: c.synGreen, name: "payroll-mgmt.vue", indent: 40 },
-  { icon: "⬡", iconColor: c.accent, name: "design-system.tsx", indent: 40 },
-  { icon: "M↓", iconColor: c.synPunct, name: "experience.md", indent: 28 },
-  { icon: "{ }", iconColor: c.accent, name: "contact.ts", indent: 28 },
+const GH_URL = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`;
+
+// --- File explorer tree --------------------------------------------------
+interface FileLeaf {
+  id: string;
+  name: string;
+  icon: string;
+  iconColor: string;
+  indent: number;
+}
+interface FolderNode {
+  id: string;
+  name: string;
+  indent: number;
+  children: FileLeaf[];
+}
+type TreeItem = ({ kind: "file" } & FileLeaf) | ({ kind: "folder" } & FolderNode);
+
+const TREE: TreeItem[] = [
+  { kind: "file", id: "about.tsx", name: "about.tsx", icon: "{ }", iconColor: c.accent, indent: 26 },
+  { kind: "file", id: "skills.json", name: "skills.json", icon: "{ }", iconColor: c.synYellow, indent: 26 },
+  {
+    kind: "folder",
+    id: "projects",
+    name: "projects",
+    indent: 16,
+    children: [
+      { id: "payroll-access.vue", name: "payroll-access.vue", icon: "V", iconColor: c.synGreen, indent: 40 },
+      { id: "payroll-mgmt.vue", name: "payroll-mgmt.vue", icon: "V", iconColor: c.synGreen, indent: 40 },
+      { id: "design-system.tsx", name: "design-system.tsx", icon: "⬡", iconColor: c.accent, indent: 40 },
+    ],
+  },
+  { kind: "file", id: "experience.md", name: "experience.md", icon: "M↓", iconColor: c.synPunct, indent: 26 },
+  { kind: "file", id: "contact.ts", name: "contact.ts", icon: "{ }", iconColor: c.accent, indent: 26 },
 ];
+
+// Flat lookup (id → leaf) for rendering tabs and the status bar.
+const FILE_META: Record<string, FileLeaf> = {};
+for (const item of TREE) {
+  if (item.kind === "file") FILE_META[item.id] = item;
+  else item.children.forEach((ch) => (FILE_META[ch.id] = ch));
+}
+
+const DEFAULT_TAB = "about.tsx";
+
+/** Resolve a file id to its editor content. */
+function FileContent({ id }: { id: string }) {
+  switch (id) {
+    case "about.tsx":
+      return (
+        <>
+          <AboutCode />
+          <ImpactGrid />
+          <GitHubActivity fetchUrl={GH_URL} />
+        </>
+      );
+    case "skills.json":
+      return <Skills />;
+    case "experience.md":
+      return <Background />;
+    case "contact.ts":
+      return <ContactBar />;
+    case "payroll-access.vue":
+      return <ProjectDetail index={0} />;
+    case "payroll-mgmt.vue":
+      return <ProjectDetail index={1} />;
+    case "design-system.tsx":
+      return <ProjectDetail index={2} />;
+    default:
+      return null;
+  }
+}
 
 function Inner() {
   const t = useT();
+  const [openTabs, setOpenTabs] = useState<string[]>([DEFAULT_TAB]);
+  const [activeTab, setActiveTab] = useState<string>(DEFAULT_TAB);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({ projects: true });
+
+  const openFile = (id: string) => {
+    setOpenTabs((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    setActiveTab(id);
+  };
+
+  const closeTab = (e: MouseEvent, id: string) => {
+    e.stopPropagation();
+    setOpenTabs((prev) => {
+      const idx = prev.indexOf(id);
+      const next = prev.filter((t) => t !== id);
+      if (id === activeTab) setActiveTab(next[idx - 1] ?? next[idx] ?? "");
+      return next;
+    });
+  };
+
+  const toggleFolder = (id: string) => setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  const fileRow = (leaf: FileLeaf) => {
+    const active = leaf.id === activeTab;
+    return (
+      <div
+        key={leaf.id}
+        onClick={() => openFile(leaf.id)}
+        style={{
+          padding: `5px 16px 5px ${leaf.indent}px`,
+          color: active ? c.heading : "#9aa4b2",
+          background: active ? "rgba(91,157,255,0.12)" : "transparent",
+          borderLeft: active ? `2px solid ${c.accent}` : "2px solid transparent",
+          display: "flex",
+          gap: 8,
+          cursor: "pointer",
+        }}
+        onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+        onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = "transparent"; }}
+      >
+        <span style={{ color: leaf.iconColor }}>{leaf.icon}</span>
+        {leaf.name}
+      </div>
+    );
+  };
+
   return (
     <div style={{ minHeight: "100vh", background: c.bg, color: c.text, fontSize: 13, display: "flex", fontFamily: font }}>
-      {/* Explorer sidebar */}
+      {/* Explorer sidebar — always visible */}
       <aside
         style={{
           width: 228,
@@ -34,55 +141,88 @@ function Inner() {
           position: "sticky",
           top: 0,
           height: "100vh",
-          overflow: "hidden",
+          overflowY: "auto",
         }}
       >
         <div style={{ padding: "0 16px 10px", color: c.dim, letterSpacing: "0.14em", fontSize: 10 }}>EXPLORER</div>
         <div style={{ padding: "5px 16px", color: "#9aa4b2", fontWeight: 600, fontSize: 12 }}>▾ MINHA-KIM</div>
         <div style={{ display: "flex", flexDirection: "column", fontSize: 12 }}>
-          {FILES.map((f) => (
-            <div
-              key={f.name}
-              style={{
-                padding: `5px 16px 5px ${f.indent}px`,
-                color: f.active ? c.heading : "#9aa4b2",
-                background: f.active ? "rgba(91,157,255,0.12)" : "transparent",
-                borderLeft: f.active ? `2px solid ${c.accent}` : "2px solid transparent",
-                display: "flex",
-                gap: 8,
-              }}
-            >
-              <span style={{ color: f.iconColor }}>{f.icon}</span>
-              {f.name}
-            </div>
-          ))}
+          {TREE.map((item) => {
+            if (item.kind === "file") return fileRow(item);
+            const open = !!expanded[item.id];
+            return (
+              <div key={item.id}>
+                <div
+                  onClick={() => toggleFolder(item.id)}
+                  style={{ padding: `5px 16px 5px ${item.indent}px`, color: "#9aa4b2", display: "flex", gap: 8, cursor: "pointer", userSelect: "none" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.03)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <span style={{ color: c.muted }}>{open ? "▾" : "▸"}</span>
+                  {item.name}
+                </div>
+                {open && item.children.map((ch) => fileRow(ch))}
+              </div>
+            );
+          })}
         </div>
       </aside>
 
       {/* Editor pane */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        {/* Tab bar */}
+        {/* Tab bar — one tab per open file */}
         <div style={{ display: "flex", justifyContent: "space-between", background: c.sidebar, borderBottom: `1px solid ${c.borderHair}`, fontSize: 12, position: "sticky", top: 0, zIndex: 10 }}>
-          <div style={{ display: "flex" }}>
-            <div style={{ padding: "9px 16px", background: c.bg, borderTop: `2px solid ${c.accent}`, color: c.heading, display: "flex", gap: 10, alignItems: "center" }}>
-              <span style={{ color: c.accent }}>{"{ }"}</span>about.tsx <span style={{ color: c.dim }}>×</span>
-            </div>
-            <div style={{ padding: "9px 16px", color: c.dim, borderTop: "2px solid transparent" }}>README.md</div>
+          <div style={{ display: "flex", overflowX: "auto" }}>
+            {openTabs.map((id) => {
+              const m = FILE_META[id];
+              if (!m) return null;
+              const active = id === activeTab;
+              return (
+                <div
+                  key={id}
+                  onClick={() => setActiveTab(id)}
+                  style={{
+                    padding: "9px 10px 9px 16px",
+                    background: active ? c.bg : "transparent",
+                    borderTop: active ? `2px solid ${c.accent}` : "2px solid transparent",
+                    borderRight: `1px solid ${c.borderHair}`,
+                    color: active ? c.heading : c.dim,
+                    display: "flex",
+                    gap: 9,
+                    alignItems: "center",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <span style={{ color: m.iconColor }}>{m.icon}</span>
+                  {m.name}
+                  <span
+                    onClick={(e) => closeTab(e, id)}
+                    title="Close"
+                    style={{ color: c.dim, marginLeft: 2, padding: "0 3px", borderRadius: 3 }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = c.heading; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.dim; }}
+                  >
+                    ×
+                  </span>
+                </div>
+              );
+            })}
           </div>
-          <div style={{ padding: "6px 10px" }}>
+          <div style={{ padding: "6px 10px", flexShrink: 0 }}>
             <LangToggle />
           </div>
         </div>
 
-        <div style={{ padding: "26px 30px 80px" }}>
-          <AboutCode />
-          <ImpactGrid />
-          <ProjectList />
-          {/* Live contribution data via the public jogruber proxy (no token).
-              This also switches the recent-commit log to the GitHub events API. */}
-          <GitHubActivity fetchUrl={`https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`} />
-          <BackgroundSkills />
-          <ContactBar />
+        {/* Editor body — content of the active tab */}
+        <div style={{ flex: 1, padding: "26px 30px 80px" }}>
+          {activeTab ? (
+            <FileContent id={activeTab} />
+          ) : (
+            <div style={{ color: c.dim, fontSize: 13, marginTop: 40 }}>
+              {t({ en: "// No file open — pick one from the explorer.", ko: "// 열린 파일이 없습니다 — 탐색기에서 선택하세요." })}
+            </div>
+          )}
         </div>
 
         {/* Status bar */}
@@ -90,8 +230,8 @@ function Inner() {
           <span>⎇ main*</span>
           <span>UTF-8</span>
           <span>TSX React</span>
-          <span style={{ marginLeft: "auto" }}>Ln 12, Col 18</span>
-          <span>{t({ en: "English", ko: "한국어" } as any)}</span>
+          <span style={{ marginLeft: "auto" }}>{activeTab ? FILE_META[activeTab]?.name : "—"}</span>
+          <span>{t({ en: "English", ko: "한국어" })}</span>
         </div>
       </div>
     </div>
