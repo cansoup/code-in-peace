@@ -45,3 +45,9 @@
 body {
     font-family: "San Francisco"; /* Or your desired font stack */
 }
+
+/* Loading skeleton shimmer for the GitHub activity card. */
+@keyframes ghActivityPulse {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 1; }
+}

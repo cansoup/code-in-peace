@@ -30,17 +30,74 @@ const stat = (fig: string, label: string) => (
   </div>
 );
 
+// A single shimmering placeholder block used to build the loading skeleton.
+const Bone = ({ w, h, r = 4, style }: { w: number | string; h: number; r?: number; style?: React.CSSProperties }) => (
+  <div
+    style={{
+      width: w,
+      height: h,
+      borderRadius: r,
+      background: c.borderHair,
+      animation: "ghActivityPulse 1.4s ease-in-out infinite",
+      ...style,
+    }}
+  />
+);
+
+/** Skeleton frame shown while live GitHub data is loading (no random data). */
+function ActivitySkeleton() {
+  return (
+    <>
+      {/* Stats row */}
+      <div style={{ display: "flex", gap: 22, flexWrap: "wrap", margin: "15px 0 18px" }}>
+        {Array.from({ length: 3 }, (_, i) => (
+          <div key={i} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <Bone w={52} h={21} />
+            <Bone w={72} h={10} />
+          </div>
+        ))}
+      </div>
+
+      {/* Heatmap grid */}
+      <div style={{ overflowX: "hidden", paddingBottom: 4 }}>
+        <div style={{ display: "flex", gap: GAP }}>
+          {Array.from({ length: 30 }, (_, wi) => (
+            <div key={wi} style={{ display: "flex", flexDirection: "column", gap: GAP }}>
+              {Array.from({ length: 7 }, (_, di) => (
+                <Bone key={di} w={CW} h={CW} r={2} style={{ animationDelay: `${(wi + di) * 40}ms` }} />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent commit rows */}
+      <div style={{ borderTop: `1px solid ${c.borderHair}`, marginTop: 16, paddingTop: 14 }}>
+        {Array.from({ length: 5 }, (_, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, alignItems: "center", padding: "6px 0" }}>
+            <Bone w={56} h={11} />
+            <Bone w={`${50 - i * 4}%`} h={11} />
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
 /**
  * GitHub activity card: contribution heatmap, streak stats, recent commits.
  * Pass `fetchUrl` to load real contribution data (see data/contributions.ts).
  */
 export function GitHubActivity({ fetchUrl }: { fetchUrl?: string }) {
   const t = useT();
-  const data = useContributions(GITHUB_USERNAME, fetchUrl);
+  const { data, loading: contribLoading } = useContributions(GITHUB_USERNAME, fetchUrl);
   // Go live for the commit log whenever live contribution data is requested.
-  const liveCommits = useRecentCommits(GITHUB_USERNAME, !!fetchUrl);
+  const { commits: liveCommits, loading: commitsLoading } = useRecentCommits(GITHUB_USERNAME, !!fetchUrl);
   const commits: Commit[] = liveCommits ?? COMMITS;
   const usingSample = data.isSample || !liveCommits;
+  // While either live fetch is in flight, show a skeleton instead of random
+  // sample data so nothing misleading flashes on first load.
+  const loading = contribLoading || commitsLoading;
 
   return (
     <>
@@ -58,6 +115,7 @@ export function GitHubActivity({ fetchUrl }: { fetchUrl?: string }) {
           </a>
         </div>
 
+        {loading ? <ActivitySkeleton /> : <>
         <div style={{ display: "flex", gap: 22, flexWrap: "wrap", margin: "15px 0 18px" }}>
           {stat(data.total.toLocaleString(), t({ en: "contributions", ko: "기여" } as any))}
           {stat(`${data.longestStreak}d`, t({ en: "longest streak", ko: "최장 연속" } as any))}
@@ -113,6 +171,7 @@ export function GitHubActivity({ fetchUrl }: { fetchUrl?: string }) {
             {t({ en: "// Illustrative data — wire to the GitHub API on deploy", ko: "// 예시 데이터 — 배포 시 GitHub API와 연동" } as any)}
           </div>
         )}
+        </>}
       </div>
     </>
   );
