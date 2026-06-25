@@ -90,3 +90,42 @@ export function ProjectList() {
     </>
   );
 }
+
+/** Full detail view for a single project (opened as its own editor tab). */
+export function ProjectDetail({ index }: { index: number }) {
+  const t = useT();
+  const p = projects[index];
+  if (!p) return null;
+  return (
+    <div>
+      <div style={{ ...sectionLabel, color: c.synComment, marginBottom: 14 }}>// {t(p.ctx)}</div>
+      <div style={{ color: c.heading, fontSize: 22, fontWeight: 600, marginBottom: 8 }}>{t(p.title)}</div>
+      <div style={{ color: c.muted, fontSize: 14, lineHeight: 1.75, maxWidth: 660, marginBottom: 20 }}>{t(p.blurb)}</div>
+
+      <div style={{ ...sectionLabel, marginBottom: 10 }}>// {t({ en: "Tech Stack", ko: "기술 스택" })}</div>
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 24 }}>
+        {p.stack.map((s) => (
+          <span key={s} style={{ fontSize: 12, color: c.synProp, background: c.accentSoftBg, padding: "4px 10px", borderRadius: 4 }}>
+            {s}
+          </span>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", borderTop: `1px solid ${c.border}`, paddingTop: 18 }}>
+        <span style={{ color: c.accent, fontSize: 13, fontWeight: 600 }}>{t(p.metric)}</span>
+        {p.link && (
+          <a
+            href={p.link}
+            target="_blank"
+            rel="noreferrer"
+            style={{ fontSize: 12, color: c.accent, textDecoration: "none", border: `1px solid ${c.accentSoftBorder}`, borderRadius: 6, padding: "7px 13px", transition: "all .15s" }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.background = c.accentSoftBg; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = c.accentSoftBorder; e.currentTarget.style.background = "transparent"; }}
+          >
+            {t({ en: "Visit project", ko: "프로젝트 보기" })} →
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}

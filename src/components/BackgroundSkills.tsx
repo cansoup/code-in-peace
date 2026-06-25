@@ -13,60 +13,64 @@ const label: React.CSSProperties = {
 const row: React.CSSProperties = { padding: "7px 0", borderTop: `1px solid ${c.borderSoft}` };
 const rowTop: React.CSSProperties = { display: "flex", justifyContent: "space-between", gap: 8 };
 
-/** Background (experience + education + certs) and Skills, side by side. */
-export function BackgroundSkills() {
+/** Background: experience + education + certificates. */
+export function Background() {
   const t = useT();
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 28, marginTop: 36 }}>
-      <div>
-        <div style={label}>// {t({ en: "Background", ko: "이력" } as any)}</div>
+    <div>
+      <div style={label}>// {t({ en: "Background", ko: "이력" })}</div>
 
-        {experience.map((e, i) => (
-          <div key={`x${i}`} style={row}>
-            <div style={rowTop}>
-              <span style={{ color: c.heading }}>{t(e.role)}</span>
-              <span style={{ color: c.dim, fontSize: 11 }}>{e.period}</span>
-            </div>
-            <div style={{ color: c.synProp, fontSize: 12 }}>{e.org}</div>
+      {experience.map((e, i) => (
+        <div key={`x${i}`} style={row}>
+          <div style={rowTop}>
+            <span style={{ color: c.heading }}>{t(e.role)}</span>
+            <span style={{ color: c.dim, fontSize: 11 }}>{e.period}</span>
           </div>
-        ))}
+          <div style={{ color: c.synProp, fontSize: 12 }}>{e.org}</div>
+        </div>
+      ))}
 
-        {education.map((e, i) => (
-          <div key={`e${i}`} style={row}>
-            <div style={rowTop}>
-              <span style={{ color: c.text, fontSize: 12 }}>{t(e.title)}</span>
-              <span style={{ color: c.dim, fontSize: 11, whiteSpace: "nowrap" }}>{e.period}</span>
-            </div>
-            <div style={{ color: c.synPunct, fontSize: 11 }}>{e.org}</div>
+      {education.map((e, i) => (
+        <div key={`e${i}`} style={row}>
+          <div style={rowTop}>
+            <span style={{ color: c.text, fontSize: 12 }}>{t(e.title)}</span>
+            <span style={{ color: c.dim, fontSize: 11, whiteSpace: "nowrap" }}>{e.period}</span>
           </div>
-        ))}
+          <div style={{ color: c.synPunct, fontSize: 11 }}>{e.org}</div>
+        </div>
+      ))}
 
-        {certificates.map((cert, i) => (
-          <div key={`c${i}`} style={row}>
-            <div style={rowTop}>
-              <span style={{ color: c.text, fontSize: 12 }}>{cert.title}</span>
-              <span style={{ color: c.dim, fontSize: 11, whiteSpace: "nowrap" }}>{cert.period}</span>
-            </div>
-            <div style={{ color: c.synPunct, fontSize: 11 }}>{cert.org}</div>
+      {certificates.map((cert, i) => (
+        <div key={`c${i}`} style={row}>
+          <div style={rowTop}>
+            <span style={{ color: c.text, fontSize: 12 }}>{cert.title}</span>
+            <span style={{ color: c.dim, fontSize: 11, whiteSpace: "nowrap" }}>{cert.period}</span>
           </div>
-        ))}
-      </div>
+          <div style={{ color: c.synPunct, fontSize: 11 }}>{cert.org}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
-      <div>
-        <div style={label}>// {t({ en: "Skills", ko: "기술 스택" } as any)}</div>
-        {skills.map((s, i) => (
-          <div key={i} style={row}>
-            <div style={{ color: "#6b7585", fontSize: 11, marginBottom: 5 }}>{t(s.cat)}</div>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {s.items.map((it) => (
-                <span key={it} style={{ fontSize: 11, color: c.text, border: `1px solid rgba(255,255,255,0.1)`, padding: "2px 8px", borderRadius: 4 }}>
-                  {it}
-                </span>
-              ))}
-            </div>
+/** Skills grouped by category, as bordered chips. */
+export function Skills() {
+  const t = useT();
+  return (
+    <div>
+      <div style={label}>// {t({ en: "Skills", ko: "기술 스택" })}</div>
+      {skills.map((s, i) => (
+        <div key={i} style={row}>
+          <div style={{ color: "#6b7585", fontSize: 11, marginBottom: 5 }}>{t(s.cat)}</div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {s.items.map((it) => (
+              <span key={it} style={{ fontSize: 11, color: c.text, border: `1px solid rgba(255,255,255,0.1)`, padding: "2px 8px", borderRadius: 4 }}>
+                {it}
+              </span>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }
