@@ -2,49 +2,53 @@
 // All values are lifted verbatim from the HTML prototype.
 
 export const colors = {
-  // surfaces
-  bg: "#14171c", // editor canvas
-  sidebar: "#0f1216", // explorer / tab bar / status strip bg
-  card: "#171b21", // project & activity cards
-  border: "rgba(255,255,255,0.07)",
-  borderSoft: "rgba(255,255,255,0.05)",
-  borderHair: "rgba(255,255,255,0.06)",
+  // surfaces — warm cream / orange-tinted editor theme
+  bg: "#faf4ec", // editor canvas
+  sidebar: "#f4ebdf", // explorer / tab bar / status strip bg
+  card: "#fdfaf5", // project & activity cards
+  border: "rgba(0,0,0,0.10)",
+  borderSoft: "rgba(0,0,0,0.06)",
+  borderHair: "rgba(0,0,0,0.07)",
 
   // text
-  heading: "#e6ebf2",
-  text: "#cdd3de",
-  muted: "#8b94a3",
-  dim: "#5b6472",
-  gutter: "#3b414d", // line numbers
+  heading: "#1f2328",
+  text: "#2b2f36",
+  muted: "#6b7280",
+  dim: "#9aa0a6",
+  gutter: "#aeb4ba", // line numbers
 
-  // accent
-  accent: "#5b9dff", // primary blue
-  accentSoftBg: "rgba(91,157,255,0.08)",
-  accentSoftBorder: "rgba(91,157,255,0.18)",
+  // accent — warm orange to match the theme + contribution heatmap
+  accent: "#c0762f", // primary orange
+  accentSoftBg: "rgba(192,118,47,0.10)",
+  accentSoftBorder: "rgba(192,118,47,0.22)",
 
   // syntax highlighting (about.tsx code block)
-  synComment: "#5c6370",
-  synKeyword: "#c792ea",
-  synProp: "#82aaff",
-  synString: "#c3e88d",
-  synPunct: "#7c8693",
-  synNumber: "#f78c6c",
-  synEquals: "#89ddff",
-  synYellow: "#f0c674", // file icons / commit hashes
-  synGreen: "#42b883", // .vue file icons
+  synComment: "#8a948c",
+  synKeyword: "#bf7434", // import / export / const / type …
+  synProp: "#6f42c1",
+  synString: "#3f8f2f",
+  synPunct: "#57606a",
+  synNumber: "#b5632a",
+  synEquals: "#1f7a8c",
+  synYellow: "#9a7d1a", // file icons / commit hashes
+  synGreen: "#3aa876", // .vue file icons
 
   // status bar
-  statusBg: "#5b9dff",
-  statusText: "#0a1020",
+  statusBg: "#c0762f",
+  statusText: "#faf4ec",
+
+  // interaction overlays (hover / pressed) — dark wash for the light theme
+  hover: "rgba(0,0,0,0.05)",
+  hoverStrong: "rgba(0,0,0,0.08)",
 } as const;
 
-// GitHub contribution heatmap — 5-step blue scale (level 0..4)
+// GitHub contribution heatmap — 5-step orange scale (level 0..4)
 export const heatPalette = [
-  "rgba(255,255,255,0.05)",
-  "#0e3a6b",
-  "#1a56a8",
-  "#2f7ae0",
-  "#5b9dff",
+  "rgba(0,0,0,0.06)",
+  "#fbd6a0",
+  "#f0a64a",
+  "#d97f2c",
+  "#a85a18",
 ] as const;
 
 export const font =

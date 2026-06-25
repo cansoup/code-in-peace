@@ -174,8 +174,8 @@ function Inner() {
         onClick={() => openFile(leaf.id)}
         style={{
           padding: `5px 16px 5px ${leaf.indent}px`,
-          color: active ? c.heading : "#9aa4b2",
-          background: active ? "rgba(91,157,255,0.12)" : "transparent",
+          color: active ? c.heading : c.muted,
+          background: active ? c.accentSoftBg : "transparent",
           borderLeft: active ? `2px solid ${c.accent}` : "2px solid transparent",
           display: "flex",
           gap: 8,
@@ -183,7 +183,7 @@ function Inner() {
           overflow: "hidden",
           cursor: "pointer",
         }}
-        onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+        onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = c.hover; }}
         onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = "transparent"; }}
       >
         <span style={{ color: leaf.iconColor, flexShrink: 0 }}>{leaf.icon}</span>
@@ -209,7 +209,7 @@ function Inner() {
         }}
       >
         <div style={{ padding: "0 16px 10px", color: c.dim, letterSpacing: "0.14em", fontSize: 10 }}>EXPLORER</div>
-        <div style={{ padding: "5px 16px", color: "#9aa4b2", fontWeight: 600, fontSize: 12 }}>▾ MINHA-KIM</div>
+        <div style={{ padding: "5px 16px", color: c.muted, fontWeight: 600, fontSize: 12 }}>▾ MINHA-KIM</div>
         <div style={{ display: "flex", flexDirection: "column", fontSize: 12 }}>
           {TREE.map((item) => {
             if (item.kind === "file") return fileRow(item);
@@ -218,8 +218,8 @@ function Inner() {
               <div key={item.id}>
                 <div
                   onClick={() => toggleFolder(item.id)}
-                  style={{ padding: `5px 16px 5px ${item.indent}px`, color: "#9aa4b2", display: "flex", gap: 8, alignItems: "center", overflow: "hidden", cursor: "pointer", userSelect: "none" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.03)")}
+                  style={{ padding: `5px 16px 5px ${item.indent}px`, color: c.muted, display: "flex", gap: 8, alignItems: "center", overflow: "hidden", cursor: "pointer", userSelect: "none" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = c.hover)}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
                   <span style={{ color: c.muted, flexShrink: 0 }}>{open ? "▾" : "▸"}</span>
@@ -237,7 +237,7 @@ function Inner() {
         onMouseDown={startResize}
         title="Drag to resize"
         style={{ width: 6, flexShrink: 0, cursor: "col-resize", background: "transparent", transition: "background .12s" }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(91,157,255,0.45)")}
+        onMouseEnter={(e) => (e.currentTarget.style.background = c.accent)}
         onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
       />
 
@@ -280,7 +280,7 @@ function Inner() {
                     onClick={(e) => closeTab(e, id)}
                     title="Close"
                     style={{ color: c.dim, marginLeft: 2, padding: "0 3px", borderRadius: 3 }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = c.heading; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = c.hoverStrong; e.currentTarget.style.color = c.heading; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = c.dim; }}
                   >
                     ×

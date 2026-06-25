@@ -25,7 +25,7 @@ export function ImpactGrid() {
               border: `1px solid ${c.accentSoftBorder}`,
               borderRadius: 8,
               padding: 16,
-              background: "rgba(91,157,255,0.04)",
+              background: c.accentSoftBg,
             }}
           >
             <div style={{ fontSize: 26, fontWeight: 700, color: c.accent }}>{m.fig}</div>
@@ -61,7 +61,7 @@ export function ProjectList() {
               transition: "all .16s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(91,157,255,0.5)";
+              e.currentTarget.style.borderColor = c.accent;
               e.currentTarget.style.transform = "translateY(-2px)";
             }}
             onMouseLeave={(e) => {
