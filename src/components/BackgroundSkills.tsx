@@ -61,10 +61,10 @@ export function Skills() {
       <div style={label}>// {t({ en: "Skills", ko: "기술 스택" })}</div>
       {skills.map((s, i) => (
         <div key={i} style={row}>
-          <div style={{ color: "#6b7585", fontSize: 11, marginBottom: 5 }}>{t(s.cat)}</div>
+          <div style={{ color: c.muted, fontSize: 11, marginBottom: 5 }}>{t(s.cat)}</div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {s.items.map((it) => (
-              <span key={it} style={{ fontSize: 11, color: c.text, border: `1px solid rgba(255,255,255,0.1)`, padding: "2px 8px", borderRadius: 4 }}>
+              <span key={it} style={{ fontSize: 11, color: c.text, border: `1px solid ${c.border}`, padding: "2px 8px", borderRadius: 4 }}>
                 {it}
               </span>
             ))}
@@ -94,7 +94,7 @@ export function ContactBar() {
               display: "inline-flex",
               gap: 8,
               alignItems: "center",
-              border: `1px solid rgba(255,255,255,0.12)`,
+              border: `1px solid ${c.border}`,
               borderRadius: 6,
               padding: "8px 13px",
               fontSize: 13,
@@ -103,7 +103,7 @@ export function ContactBar() {
               transition: "all .15s",
             }}
             onMouseEnter={(e) => { e.currentTarget.style.borderColor = c.accent; e.currentTarget.style.color = c.accent; }}
-            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; e.currentTarget.style.color = c.text; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = c.border; e.currentTarget.style.color = c.text; }}
           >
             {lnk.label} <span style={{ color: c.dim }}>{lnk.handle}</span>
           </a>

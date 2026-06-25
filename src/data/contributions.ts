@@ -97,16 +97,23 @@ export const sampleContributions = (): ContribData => ({
 });
 
 /**
- * Returns contribution data. Pass a `fetchUrl` (option 2 above) to load real
- * data; otherwise you get the deterministic sample. On any fetch error it
- * silently falls back to the sample so the section always renders.
+ * Returns contribution data plus a `loading` flag. Pass a `fetchUrl` (option 2
+ * above) to load real data; otherwise you get the deterministic sample
+ * immediately (loading = false). While the fetch is in flight `loading` is
+ * true so the caller can render a skeleton instead of the sample. On any fetch
+ * error it silently falls back to the sample so the section always renders.
  */
-export function useContributions(username: string, fetchUrl?: string): ContribData {
+export function useContributions(
+  username: string,
+  fetchUrl?: string,
+): { data: ContribData; loading: boolean } {
   const [data, setData] = useState<ContribData>(sampleContributions);
+  const [loading, setLoading] = useState<boolean>(!!fetchUrl);
 
   useEffect(() => {
-    if (!fetchUrl) return;
+    if (!fetchUrl) { setLoading(false); return; }
     let alive = true;
+    setLoading(true);
     (async () => {
       try {
         const res = await fetch(fetchUrl);
@@ -117,12 +124,14 @@ export function useContributions(username: string, fetchUrl?: string): ContribDa
         if (alive && counts.length) setData({ ...build(counts), isSample: false });
       } catch {
         /* keep sample */
+      } finally {
+        if (alive) setLoading(false);
       }
     })();
     return () => { alive = false; };
   }, [username, fetchUrl]);
 
-  return data;
+  return { data, loading };
 }
 
 // ---------------------------------------------------------------------------
@@ -151,16 +160,23 @@ function relativeTime(iso: string): { en: string; ko: string } {
 }
 
 /**
- * Returns the user's most recent public push commits, newest first, or `null`
- * while loading / on error (so the caller can fall back to sample data).
- * Uses GitHub's public events API (no token; 60 req/hr per IP, CORS-enabled).
+ * Returns the user's most recent public push commits (newest first) plus a
+ * `loading` flag. `commits` is `null` while loading / on error so the caller
+ * can fall back to sample data once loading settles. Uses GitHub's public
+ * events API (no token; 60 req/hr per IP, CORS-enabled).
  */
-export function useRecentCommits(username: string, enabled = true, max = 5): RecentCommit[] | null {
+export function useRecentCommits(
+  username: string,
+  enabled = true,
+  max = 5,
+): { commits: RecentCommit[] | null; loading: boolean } {
   const [commits, setCommits] = useState<RecentCommit[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(enabled);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) { setLoading(false); return; }
     let alive = true;
+    setLoading(true);
     (async () => {
       try {
         const res = await fetch(`https://api.github.com/users/${username}/events/public?per_page=100`);
@@ -187,10 +203,12 @@ export function useRecentCommits(username: string, enabled = true, max = 5): Rec
         if (alive && out.length) setCommits(out);
       } catch {
         /* keep null → caller falls back to sample */
+      } finally {
+        if (alive) setLoading(false);
       }
     })();
     return () => { alive = false; };
   }, [username, enabled, max]);
 
-  return commits;
+  return { commits, loading };
 }
