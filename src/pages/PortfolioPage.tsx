@@ -1,7 +1,26 @@
-import { useState, type MouseEvent } from "react";
+import { useState, useRef, type MouseEvent } from "react";
 import { LangContext, useT, type Lang, readStoredLang, storeLang } from "../i18n";
 import { colors as c, font } from "../theme";
 import { GITHUB_USERNAME } from "../data/portfolio";
+
+// --- Resizable sidebar width (persisted, like an IDE) --------------------
+const WIDTH_KEY = "pf_sidebar_w";
+const DEFAULT_WIDTH = 228;
+const MIN_WIDTH = 160;
+const MAX_WIDTH = 300;
+
+function readStoredWidth(): number {
+  try {
+    const v = Number(localStorage.getItem(WIDTH_KEY));
+    if (v >= MIN_WIDTH && v <= MAX_WIDTH) return v;
+  } catch {}
+  return DEFAULT_WIDTH;
+}
+function storeWidth(w: number) {
+  try {
+    localStorage.setItem(WIDTH_KEY, String(w));
+  } catch {}
+}
 import { LangToggle } from "../components/LangToggle";
 import { AboutCode } from "../components/AboutCode";
 import { ImpactGrid, ProjectDetail } from "../components/Sections";
@@ -86,6 +105,32 @@ function Inner() {
   const [openTabs, setOpenTabs] = useState<string[]>([DEFAULT_TAB]);
   const [activeTab, setActiveTab] = useState<string>(DEFAULT_TAB);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({ projects: true });
+  const [sidebarWidth, setSidebarWidth] = useState<number>(readStoredWidth);
+  const draggingRef = useRef(false);
+  const widthRef = useRef(sidebarWidth);
+
+  const startResize = (e: MouseEvent) => {
+    e.preventDefault();
+    draggingRef.current = true;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    const onMove = (ev: globalThis.MouseEvent) => {
+      if (!draggingRef.current) return;
+      const w = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, ev.clientX));
+      widthRef.current = w;
+      setSidebarWidth(w);
+    };
+    const onUp = () => {
+      draggingRef.current = false;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      storeWidth(widthRef.current);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
 
   const openFile = (id: string) => {
     setOpenTabs((prev) => (prev.includes(id) ? prev : [...prev, id]));
@@ -117,13 +162,15 @@ function Inner() {
           borderLeft: active ? `2px solid ${c.accent}` : "2px solid transparent",
           display: "flex",
           gap: 8,
+          alignItems: "center",
+          overflow: "hidden",
           cursor: "pointer",
         }}
         onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
         onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = "transparent"; }}
       >
-        <span style={{ color: leaf.iconColor }}>{leaf.icon}</span>
-        {leaf.name}
+        <span style={{ color: leaf.iconColor, flexShrink: 0 }}>{leaf.icon}</span>
+        <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{leaf.name}</span>
       </div>
     );
   };
@@ -133,7 +180,7 @@ function Inner() {
       {/* Explorer sidebar — always visible */}
       <aside
         style={{
-          width: 228,
+          width: sidebarWidth,
           flexShrink: 0,
           background: c.sidebar,
           borderRight: `1px solid ${c.borderHair}`,
@@ -154,12 +201,12 @@ function Inner() {
               <div key={item.id}>
                 <div
                   onClick={() => toggleFolder(item.id)}
-                  style={{ padding: `5px 16px 5px ${item.indent}px`, color: "#9aa4b2", display: "flex", gap: 8, cursor: "pointer", userSelect: "none" }}
+                  style={{ padding: `5px 16px 5px ${item.indent}px`, color: "#9aa4b2", display: "flex", gap: 8, alignItems: "center", overflow: "hidden", cursor: "pointer", userSelect: "none" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.03)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
-                  <span style={{ color: c.muted }}>{open ? "▾" : "▸"}</span>
-                  {item.name}
+                  <span style={{ color: c.muted, flexShrink: 0 }}>{open ? "▾" : "▸"}</span>
+                  <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.name}</span>
                 </div>
                 {open && item.children.map((ch) => fileRow(ch))}
               </div>
@@ -167,6 +214,15 @@ function Inner() {
           })}
         </div>
       </aside>
+
+      {/* Drag handle — resize the sidebar like an IDE */}
+      <div
+        onMouseDown={startResize}
+        title="Drag to resize"
+        style={{ width: 6, flexShrink: 0, cursor: "col-resize", background: "transparent", transition: "background .12s" }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(91,157,255,0.45)")}
+        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+      />
 
       {/* Editor pane */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
