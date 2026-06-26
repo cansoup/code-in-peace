@@ -232,11 +232,13 @@ function Inner() {
         </div>
       </aside>
 
-      {/* Drag handle — resize the sidebar like an IDE */}
+      {/* Drag handle — resize the sidebar like an IDE. Overlaps the sidebar's
+          right edge (negative margin) so the hover highlight sits just inside
+          the sidebar rather than in the gap to its right. */}
       <div
         onMouseDown={startResize}
         title="Drag to resize"
-        style={{ width: 6, flexShrink: 0, cursor: "col-resize", background: "transparent", transition: "background .12s" }}
+        style={{ width: 6, marginLeft: -6, flexShrink: 0, cursor: "col-resize", background: "transparent", transition: "background .12s", zIndex: 1 }}
         onMouseEnter={(e) => (e.currentTarget.style.background = c.accent)}
         onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
       />
