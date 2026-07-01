@@ -1,7 +1,7 @@
 import { useState, useRef, type MouseEvent } from "react";
 import { LangContext, useT, type Lang, readStoredLang, storeLang } from "../i18n";
 import { colors as c, font } from "../theme";
-import { GITHUB_USERNAME } from "../data/portfolio";
+import { GITHUB_USERNAME, projects, projectGroups } from "../data/portfolio";
 
 // --- Resizable sidebar width (persisted, like an IDE) --------------------
 const WIDTH_KEY = "pf_sidebar_w";
@@ -23,7 +23,7 @@ function storeWidth(w: number) {
 }
 import { LangToggle } from "../components/LangToggle";
 import { AboutCode } from "../components/AboutCode";
-import { ImpactGrid, ProjectDetail } from "../components/Sections";
+import { ImpactGrid, ProjectDetail, ProjectList, OtherWork } from "../components/Sections";
 import { GitHubActivity } from "../components/GitHubActivity";
 import { Background, Skills, ContactBar } from "../components/BackgroundSkills";
 
@@ -45,22 +45,39 @@ interface FolderNode {
 }
 type TreeItem = ({ kind: "file" } & FileLeaf) | ({ kind: "folder" } & FolderNode);
 
+const FILE_INDENT = 26;
+const FOLDER_INDENT = 16;
+const LEAF_INDENT = 40;
+
+/** Pick an explorer icon + color from a file's extension, IDE-style. */
+function iconFor(file: string): { icon: string; iconColor: string } {
+  if (file.endsWith(".vue")) return { icon: "V", iconColor: c.synGreen };
+  if (file.endsWith(".md")) return { icon: "M↓", iconColor: c.synPunct };
+  if (file.endsWith(".json")) return { icon: "{ }", iconColor: c.synYellow };
+  if (file.endsWith(".ts")) return { icon: "{ }", iconColor: c.accent };
+  return { icon: "⬡", iconColor: c.accent }; // .tsx and friends
+}
+
+const leaf = (id: string, indent: number): FileLeaf => ({ id, name: id, indent, ...iconFor(id) });
+const fileItem = (id: string, icon: string, iconColor: string): TreeItem =>
+  ({ kind: "file", id, name: id, icon, iconColor, indent: FILE_INDENT });
+
+// Project folders are generated from the data, so adding a project is a
+// one-line edit in portfolio.ts. The hiworks folder also carries `other.md`.
+const projectFolders: TreeItem[] = projectGroups.map((g) => {
+  const children: FileLeaf[] = projects
+    .filter((p) => p.group === g.id)
+    .map((p) => leaf(p.file, LEAF_INDENT));
+  if (g.id === "hiworks") children.push(leaf("other.md", LEAF_INDENT));
+  return { kind: "folder", id: g.folder, name: g.folder, indent: FOLDER_INDENT, children };
+});
+
 const TREE: TreeItem[] = [
-  { kind: "file", id: "about.tsx", name: "about.tsx", icon: "{ }", iconColor: c.accent, indent: 26 },
-  { kind: "file", id: "skills.json", name: "skills.json", icon: "{ }", iconColor: c.synYellow, indent: 26 },
-  {
-    kind: "folder",
-    id: "projects",
-    name: "projects",
-    indent: 16,
-    children: [
-      { id: "payroll-access.vue", name: "payroll-access.vue", icon: "V", iconColor: c.synGreen, indent: 40 },
-      { id: "payroll-mgmt.vue", name: "payroll-mgmt.vue", icon: "V", iconColor: c.synGreen, indent: 40 },
-      { id: "design-system.tsx", name: "design-system.tsx", icon: "⬡", iconColor: c.accent, indent: 40 },
-    ],
-  },
-  { kind: "file", id: "experience.md", name: "experience.md", icon: "M↓", iconColor: c.synPunct, indent: 26 },
-  { kind: "file", id: "contact.ts", name: "contact.ts", icon: "{ }", iconColor: c.accent, indent: 26 },
+  fileItem("about.tsx", "{ }", c.accent),
+  fileItem("skills.json", "{ }", c.synYellow),
+  ...projectFolders,
+  fileItem("experience.md", "M↓", c.synPunct),
+  fileItem("contact.ts", "{ }", c.accent),
 ];
 
 // Flat lookup (id → leaf) for rendering tabs and the status bar.
@@ -73,13 +90,16 @@ for (const item of TREE) {
 const DEFAULT_TAB = "about.tsx";
 
 /** Resolve a file id to its editor content. */
-function FileContent({ id }: { id: string }) {
+function FileContent({ id, onOpen }: { id: string; onOpen: (id: string) => void }) {
+  // Any project file → its detail view (looked up by `file`).
+  if (projects.some((p) => p.file === id)) return <ProjectDetail file={id} />;
   switch (id) {
     case "about.tsx":
       return (
         <>
           <AboutCode />
           <ImpactGrid />
+          <ProjectList onOpen={onOpen} />
           <GitHubActivity fetchUrl={GH_URL} />
         </>
       );
@@ -89,12 +109,8 @@ function FileContent({ id }: { id: string }) {
       return <Background />;
     case "contact.ts":
       return <ContactBar />;
-    case "payroll-access.vue":
-      return <ProjectDetail index={0} />;
-    case "payroll-mgmt.vue":
-      return <ProjectDetail index={1} />;
-    case "design-system.tsx":
-      return <ProjectDetail index={2} />;
+    case "other.md":
+      return <OtherWork />;
     default:
       return null;
   }
@@ -104,7 +120,7 @@ function Inner() {
   const t = useT();
   const [openTabs, setOpenTabs] = useState<string[]>([DEFAULT_TAB]);
   const [activeTab, setActiveTab] = useState<string>(DEFAULT_TAB);
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({ projects: true });
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({ hiworks: true, school: true });
   const [sidebarWidth, setSidebarWidth] = useState<number>(readStoredWidth);
   const draggingRef = useRef(false);
   const widthRef = useRef(sidebarWidth);
@@ -299,7 +315,7 @@ function Inner() {
         {/* Editor body — content of the active tab */}
         <div style={{ flex: 1, padding: "26px 30px 80px" }}>
           {activeTab ? (
-            <FileContent id={activeTab} />
+            <FileContent id={activeTab} onOpen={openFile} />
           ) : (
             <div style={{ color: c.dim, fontSize: 13, marginTop: 40 }}>
               {t({ en: "// No file open — pick one from the explorer.", ko: "// 열린 파일이 없습니다 — 탐색기에서 선택하세요." })}
