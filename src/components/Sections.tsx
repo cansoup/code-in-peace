@@ -158,6 +158,45 @@ function BulletList({ items, marker = "▹", color = c.accent }: { items: string
   );
 }
 
+/** Browser/preview-style frame for a project's hero image. Renders the image
+ *  when `src` is set; otherwise a themed placeholder so the layout is complete
+ *  before real screenshots land. Keep files in public/images/. */
+function PreviewFrame({ src, title, label }: { src?: string; title: string; label?: string }) {
+  const t = useT();
+  const dots = ["#ec6a5e", "#f4bf4f", "#61c554"];
+  return (
+    <div style={{ border: `1px solid ${c.border}`, borderRadius: 10, overflow: "hidden", background: c.card }}>
+      {/* Title bar — mac dots + a fake address pill */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", background: c.sidebar, borderBottom: `1px solid ${c.borderHair}` }}>
+        <div style={{ display: "flex", gap: 6 }}>
+          {dots.map((d) => (
+            <span key={d} style={{ width: 10, height: 10, borderRadius: "50%", background: d, display: "inline-block" }} />
+          ))}
+        </div>
+        {label && (
+          <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+            <span style={{ maxWidth: "80%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", background: c.bg, border: `1px solid ${c.borderHair}`, borderRadius: 5, padding: "2px 12px", color: c.dim, fontSize: 11 }}>
+              {label}
+            </span>
+          </div>
+        )}
+      </div>
+      {/* Body — 16:9 preview area */}
+      <div style={{ aspectRatio: "16 / 9", background: `linear-gradient(135deg, ${c.accentSoftBg}, ${c.card})`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {src ? (
+          <img src={src} alt={title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        ) : (
+          <div style={{ textAlign: "center", padding: 20 }}>
+            <div style={{ fontSize: 30, color: c.accentSoftBorder, marginBottom: 8 }}>▦</div>
+            <div style={{ color: c.muted, fontSize: 13, fontWeight: 600 }}>{title}</div>
+            <div style={{ color: c.dim, fontSize: 11, marginTop: 4 }}>{t({ en: "// preview image coming soon", ko: "// 미리보기 이미지 추가 예정" })}</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /** Full detail view for a single project (opened as its own editor tab). */
 export function ProjectDetail({ file }: { file: string }) {
   const t = useT();
@@ -178,7 +217,16 @@ export function ProjectDetail({ file }: { file: string }) {
         <span style={{ color: c.heading, fontSize: 24, fontWeight: 700 }}>{t(p.title)}</span>
         {p.wip && <WipBadge />}
       </div>
-      <div style={{ color: c.text, fontSize: 14, lineHeight: 1.8, marginBottom: 26 }}>{t(d?.overview ?? p.blurb)}</div>
+      <div style={{ color: c.text, fontSize: 14, lineHeight: 1.8, marginBottom: 22 }}>{t(d?.overview ?? p.blurb)}</div>
+
+      {/* Hero preview — real screenshot when available, placeholder otherwise */}
+      <div style={{ marginBottom: 28 }}>
+        <PreviewFrame
+          src={p.cover}
+          title={t(p.title)}
+          label={p.link ? p.link.replace(/^https?:\/\//, "").replace(/\/$/, "") : p.file}
+        />
+      </div>
 
       {/* Project overview — at-a-glance meta (duration / role / team) */}
       {meta.length > 0 && (
