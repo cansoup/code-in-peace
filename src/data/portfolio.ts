@@ -39,7 +39,7 @@ export interface ProjectDetailContent {
 
 /** Which cluster a project belongs to — drives the explorer folders and the
  *  grouped "Selected Work" overview on about.tsx. */
-export type ProjectGroup = "hiworks" | "school";
+export type ProjectGroup = "hiworks" | "personal";
 
 export interface ProjectGroupInfo {
   id: ProjectGroup;
@@ -65,7 +65,7 @@ export interface Project {
 /** Folder/heading config for each project cluster, in display order. */
 export const projectGroups: ProjectGroupInfo[] = [
   { id: "hiworks", folder: "hiworks", label: l("Hiworks", "Hiworks") },
-  { id: "school", folder: "school", label: l("School", "학교") },
+  { id: "personal", folder: "personal", label: l("Personal", "개인") },
 ];
 
 export interface SkillGroup {
@@ -323,7 +323,7 @@ export const projects: Project[] = [
     wip: true,
   },
   {
-    group: "school",
+    group: "personal",
     file: "capstone.tsx",
     idx: "S1",
     ctx: l("School · UTS", "학교 · UTS"),
@@ -334,7 +334,7 @@ export const projects: Project[] = [
     wip: true,
   },
   {
-    group: "school",
+    group: "personal",
     file: "coursework-a.tsx",
     idx: "S2",
     ctx: l("School · UTS", "학교 · UTS"),
@@ -345,13 +345,24 @@ export const projects: Project[] = [
     wip: true,
   },
   {
-    group: "school",
+    group: "personal",
     file: "coursework-b.tsx",
     idx: "S3",
     ctx: l("School · UTS", "학교 · UTS"),
     title: l("Coursework B", "수업 프로젝트 B"),
     stack: ["Python", "NLP"],
     blurb: l("(Draft) Coursework project — to be filled in.", "(작성 예정) 수업 프로젝트 — 내용 채울 예정."),
+    metric: l("TBD", "작성 예정"),
+    wip: true,
+  },
+  {
+    group: "personal",
+    file: "side-project.tsx",
+    idx: "P1",
+    ctx: l("Personal", "개인"),
+    title: l("Personal Project", "개인 프로젝트"),
+    stack: ["React", "TypeScript"],
+    blurb: l("(Draft) A personal side project — to be filled in.", "(작성 예정) 개인 사이드 프로젝트 — 내용 채울 예정."),
     metric: l("TBD", "작성 예정"),
     wip: true,
   },
