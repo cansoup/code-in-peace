@@ -120,7 +120,7 @@ function Inner() {
   const t = useT();
   const [openTabs, setOpenTabs] = useState<string[]>([DEFAULT_TAB]);
   const [activeTab, setActiveTab] = useState<string>(DEFAULT_TAB);
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({ hiworks: true, school: true });
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({ hiworks: true, personal: true });
   const [sidebarWidth, setSidebarWidth] = useState<number>(readStoredWidth);
   const draggingRef = useRef(false);
   const widthRef = useRef(sidebarWidth);
