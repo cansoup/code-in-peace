@@ -258,10 +258,17 @@ export function ProjectDetail({ file }: { file: string }) {
         </DetailBlock>
       ) : null}
 
-      {/* Frontend system design */}
+      {/* System design */}
       {d?.architecture?.length ? (
-        <DetailBlock label={t({ en: "Frontend System Design", ko: "프론트엔드 시스템 설계" })}>
+        <DetailBlock label={t({ en: "System Design", ko: "시스템 설계" })}>
           <BulletList items={d.architecture.map(t)} />
+        </DetailBlock>
+      ) : null}
+
+      {/* Design considerations — decisions weighed while building */}
+      {d?.considerations?.length ? (
+        <DetailBlock label={t({ en: "Design Considerations", ko: "고려된 사항" })}>
+          <BulletList items={d.considerations.map(t)} marker="◆" color={c.synProp} />
         </DetailBlock>
       ) : null}
 
